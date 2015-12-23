@@ -122,11 +122,11 @@ $(document).ready(function() {
       calc.reset();
     } else if (currVal === "."){
       if (calc.isNumOne === undefined || calc.isNumOne === true) {
-        calc.prevVal = (calc.prevVal.length>0) ? '.'+ calc.prevVal : calc.prevVal+'.';
+        calc.prevVal = (calc.prevVal.length>0) ? calc.prevVal + '.' : '.'+calc.prevVal;
         $(".display").text(calc.prevVal);
         console.log('nohere',calc.prevVal.length);
       } else {
-        calc.newVal = (calc.newVal.length > 0)? '.'+calc.newVal : calc.newVal+'.';
+        calc.newVal = (calc.newVal.length > 0)? calc.newVal + '.' : '.'+calc.newVal;
         $(".display").text(calc.newVal); 
       }
       } else if (currVal === "%") {
