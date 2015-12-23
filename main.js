@@ -2,7 +2,7 @@ var calc = {
   currAns:0,
   prevVal:0,
   newVal:0,
-  currSym:"",
+  currSym:[],
   symCount:0
 }
 calc.accumVal = function(num) {
@@ -60,11 +60,11 @@ calc.reset = function() {
   calc.currSym = "";
   $(".display").text('');
 }
-calc.ans = function() { 
-    console.log(calc.currSym);
-    console.log(calc.symCount,'sym',calc.prevVal,calc.newVal);
+calc.ans = function() {
+  console.log('ans',calc.currSym); 
+  var sym = calc.currSym.shift();
   calc.prevVal = calc.symCount > 2 ? 0 : calc.prevVal;
-  switch(calc.currSym) {
+  switch(sym) {
   case '+':
     calc.add();
     calc.newVal = 0;
@@ -84,6 +84,9 @@ calc.ans = function() {
   case '.':
     calc.dec();
     break;
+  case '%': 
+    calc.perc();
+    break;
   default:
     calc.reset();
   }
@@ -92,9 +95,12 @@ calc.ans = function() {
 
 $(document).ready(function() {
   $('button').click(function() {
-    (console.log('yo doc',calc.currAns,calc.prevVal,calc.newVal));
     var currVal = this.textContent;
-    console.log('cur',currVal);
+    console.log('cur',currVal,'sym',calc.currSym);
+       if (currVal !== "=" && !Number(currVal)) {
+        calc.currSym.push(currVal);
+            console.log('vut sym', calc.currSym);
+      }
     if (Number(currVal) && calc.symCount === 0) {
       calc.accumVal(currVal);
     } else if (Number(currVal)) {
@@ -102,17 +108,18 @@ $(document).ready(function() {
     } else if (currVal === "=" && calc.newVal === 0){
       $(".display").text(calc.prevVal);
       calc.prevVal = 0;
-      console.log('tehe');
+    } else if (currVal ==="AC" || currVal ==="CE") {
+      calc.reset();
     } else {
       console.log('ji');
       calc.symCount++;
       if (calc.symCount >= 2 || currVal === "=") {
-        calc.ans();
+        if (calc.newVal !== 0) {
+          console.log('new',calc.newVal);
+          calc.ans();
+        }
       }
 
-      if (currVal !== "=") {
-        calc.currSym = currVal;
-      }
     }
   });
 });
