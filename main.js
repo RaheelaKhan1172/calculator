@@ -27,7 +27,8 @@ calc.accumValTwo = function(num) {
 }
 
 calc.add = function() {
-  console.log(calc.prevVal,calc.newVal);
+      console.log('yo add',calc.prevVal,calc.currAns,calc.newVal);
+
   if (calc.prevVal === 0) {
     calc.currAns = Number(calc.currAns) +  Number(calc.newVal);
   } else {
@@ -36,11 +37,13 @@ calc.add = function() {
   $(".display").text(calc.currAns);
 }
 calc.minus = function() {
-  console.log(calc.prevVal, calc.newVal);
+        console.log('yo min',calc.prevVal,calc.currAns,calc.newVal);
+
   calc.currAns = (calc.prevVal === 0) ? Number(calc.currAns) - Number(calc.newVal) : Number(calc.prevVal) - Number(calc.newVal);
   $(".display").text(calc.currAns);
 }
 calc.mult = function() {
+    console.log('yo',calc.prevVal,calc.currAns,calc.newVal);
     calc.currAns = (calc.prevVal === 0) ? Number(calc.currAns) * Number(calc.newVal) : Number(calc.prevVal) * Number(calc.newVal);
   $(".display").text(calc.currAns);
 }
@@ -49,7 +52,6 @@ calc.div = function() {
     calc.currAns = (calc.prevVal === 0) ? Number(calc.currAns) / Number(calc.newVal) : Number(calc.prevVal) / Number(calc.newVal);
   $(".display").text(calc.currAns);
 }
-
 calc.reset = function() {
   calc.prevVal = 0;
   calc.newVal = 0;
@@ -90,17 +92,27 @@ calc.ans = function() {
 
 $(document).ready(function() {
   $('button').click(function() {
+    (console.log('yo doc',calc.currAns,calc.prevVal,calc.newVal));
     var currVal = this.textContent;
+    console.log('cur',currVal);
     if (Number(currVal) && calc.symCount === 0) {
       calc.accumVal(currVal);
     } else if (Number(currVal)) {
       calc.accumValTwo(currVal);
+    } else if (currVal === "=" && calc.newVal === 0){
+      $(".display").text(calc.prevVal);
+      calc.prevVal = 0;
+      console.log('tehe');
     } else {
+      console.log('ji');
       calc.symCount++;
-      if (calc.symCount >= 2 || String(currVal) === "=") {
+      if (calc.symCount >= 2 || currVal === "=") {
         calc.ans();
       }
-      calc.currSym = currVal;
+
+      if (currVal !== "=") {
+        calc.currSym = currVal;
+      }
     }
   });
 });
