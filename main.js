@@ -57,12 +57,13 @@ calc.reset = function() {
   calc.newVal = 0;
   calc.currAns = 0;
   calc.symCount = 0;
-  calc.currSym = "";
+  calc.currSym = [];
   $(".display").text('');
 }
 calc.ans = function() {
   console.log('ans',calc.currSym); 
   var sym = calc.currSym.shift();
+  console.log('am i herre');
   calc.prevVal = calc.symCount > 2 ? 0 : calc.prevVal;
   switch(sym) {
   case '+':
@@ -81,12 +82,6 @@ calc.ans = function() {
     calc.div();
     calc.newVal = 0;
     break;
-  case '.':
-    calc.dec();
-    break;
-  case '%': 
-    calc.perc();
-    break;
   default:
     calc.reset();
   }
@@ -96,30 +91,60 @@ calc.ans = function() {
 $(document).ready(function() {
   $('button').click(function() {
     var currVal = this.textContent;
-    console.log('cur',currVal,'sym',calc.currSym);
-       if (currVal !== "=" && !Number(currVal)) {
+       if (currVal !== "=" && currVal !== '.' && currVal !== '0' && currVal !== "%" && !Number(currVal)) {
         calc.currSym.push(currVal);
             console.log('vut sym', calc.currSym);
       }
+    
     if (Number(currVal) && calc.symCount === 0) {
+      calc.isNumOne = true;
       calc.accumVal(currVal);
     } else if (Number(currVal)) {
+      calc.isNumOne = false;
       calc.accumValTwo(currVal);
     } else if (currVal === "=" && calc.newVal === 0){
+      if(calc.isNumOne === true) {
       $(".display").text(calc.prevVal);
       calc.prevVal = 0;
+     }  else {
+        $('.display').text(calc.newVal);
+        calc.newVal = 0;
+      } 
+    } else if(currVal === "0") {
+      if (calc.isNumOne === true) {
+        calc.prevVal = (calc.prevVal <= 10 ) ? calc.prevVal * 10 : calc.prevVal * 100;
+        $(".display").text(calc.prevVal);
+      } else {
+        calc.newVal = (calc.newVal <=10 ) ? calc.newVal * 10 : calc.newVal * 100;
+        $(".display").text(calc.newVal);
+      }
     } else if (currVal ==="AC" || currVal ==="CE") {
       calc.reset();
-    } else {
+    } else if (currVal === "."){
+      if (calc.isNumOne === undefined || calc.isNumOne === true) {
+        calc.prevVal = (calc.prevVal.length>0) ? '.'+ calc.prevVal : calc.prevVal+'.';
+        $(".display").text(calc.prevVal);
+        console.log('nohere',calc.prevVal.length);
+      } else {
+        calc.newVal = (calc.newVal.length > 0)? '.'+calc.newVal : calc.newVal+'.';
+        $(".display").text(calc.newVal); 
+      }
+      } else if (currVal === "%") {
+         if (!calc.isNumOne) {
+      calc.newVal = (calc.newVal <= 10) ? calc.newVal / 10 : calc.newVal / 100;
+      $(".display").text(calc.newVal);
+      } else {
+       calc.prevVal = (calc.prevVal <= 10) ? calc.prevVal / 10 : calc.prevVal / 100;
+       $(".display").text(calc.prevVal);
+      }    
+      } else {
       console.log('ji');
       calc.symCount++;
       if (calc.symCount >= 2 || currVal === "=") {
         if (calc.newVal !== 0) {
-          console.log('new',calc.newVal);
           calc.ans();
         }
       }
-
     }
   });
 });
